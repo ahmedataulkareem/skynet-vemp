@@ -30,8 +30,9 @@ class RecorderProcessor extends AudioWorkletProcessor {
    */
     process(inputs) {
         // Grabbing the 1st channel similar to ScriptProcessorNode
+        console.log(inputs)
         this.append(inputs[0][0])
-
+        
         return true
     }
 

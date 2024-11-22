@@ -2,8 +2,9 @@ ARG BASE_IMAGE_BUILD=nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
 ARG BASE_IMAGE_RUN=nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 
 ## Base Image
-
 FROM ${BASE_IMAGE_BUILD} AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN \
     apt-get update && \
@@ -12,10 +13,10 @@ RUN \
 COPY docker/rootfs/ /
 
 RUN \
-    apt-dpkg-wrap apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
-    apt-dpkg-wrap apt-get update && \
-    apt-dpkg-wrap apt-get install -y build-essential libcurl4-openssl-dev python3.11 python3.11-venv && \
-    apt-cleanup
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
+    apt-get update && \
+    apt-get install -y build-essential libcurl4-openssl-dev python3.11 python3.11-venv && \
+    apt-get clean
 
 COPY requirements.txt /app/
 
@@ -29,16 +30,17 @@ RUN \
     pip install -vvv -r requirements.txt
 
 ## Build ffmpeg
-
 FROM ${BASE_IMAGE_RUN} AS ffmpeg_install
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 COPY docker/rootfs/ /
 
 # ffmpeg build dependencies
 RUN \
-    apt-dpkg-wrap apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
-    apt-dpkg-wrap apt-get update && \
-    apt-dpkg-wrap apt-get install -y \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
+    apt-get update && \
+    apt-get install -y \
         autoconf \
         automake \
         build-essential \
@@ -52,7 +54,7 @@ RUN \
         yasm \
         zlib1g \
         zlib1g-dev && \
-    apt-cleanup
+    apt-get clean
 
 # Build ffmpeg6 (required for pytorch which only supports ffmpeg < v7)
 RUN \
@@ -71,7 +73,7 @@ RUN \
     ldconfig
 
 RUN \
-    apt-dpkg-wrap apt-get autoremove -y \
+    apt-get autoremove -y \
         autoconf \
         automake \
         build-essential \
@@ -85,8 +87,9 @@ RUN \
         zlib1g-dev
 
 ## Production Image
-
 FROM ffmpeg_install
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN \
     apt-get update && \
@@ -96,10 +99,10 @@ COPY docker/rootfs/ /
 COPY --chown=jitsi:jitsi docker/run-skynet.sh /opt/
 
 RUN \
-    apt-dpkg-wrap apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
-    apt-dpkg-wrap apt-get update && \
-    apt-dpkg-wrap apt-get install -y python3.11 python3.11-venv tini libgomp1 strace gdb && \
-    apt-cleanup
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
+    apt-get update && \
+    apt-get install -y python3.11 python3.11-venv tini libgomp1 strace gdb && \
+    apt-get clean
 
 # Principle of least privilege: create a new user for running the application
 RUN \
@@ -138,4 +141,4 @@ USER 1001
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Run Skynet
-CMD ["/opt/run-skynet.sh"]
+CMD ["/bin/bash", "-c", "source .venv/bin/activate && python3.11 skynet/main.py"]

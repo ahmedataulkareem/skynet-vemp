@@ -26,7 +26,7 @@ def tobool(val: str | None):
 app_port = int(os.environ.get('SKYNET_PORT', 8000))
 log_level = os.environ.get('LOG_LEVEL', 'DEBUG').strip().upper()
 supported_modules = {'summaries:dispatcher', 'summaries:executor', 'streaming_whisper'}
-enabled_modules = set(os.environ.get('ENABLED_MODULES', 'summaries:dispatcher,summaries:executor').split(','))
+enabled_modules = set(os.environ.get('ENABLED_MODULES', 'streaming_whisper').split(','))
 modules = supported_modules.intersection(enabled_modules)
 file_refresh_interval = int(os.environ.get('FILE_REFRESH_INTERVAL', 30))
 
@@ -48,7 +48,7 @@ openai_api_base_url = os.environ.get(
 openai_credentials_file = os.environ.get('SKYNET_CREDENTIALS_PATH')
 
 # auth
-bypass_auth = tobool(os.environ.get('BYPASS_AUTHORIZATION'))
+bypass_auth = True
 asap_pub_keys_url = os.environ.get('ASAP_PUB_KEYS_REPO_URL')
 asap_pub_keys_folder = os.environ.get('ASAP_PUB_KEYS_FOLDER')
 asap_pub_keys_fallback_folder = os.environ.get('ASAP_PUB_KEYS_FALLBACK_FOLDER')
@@ -75,12 +75,12 @@ redis_aws_region = os.environ.get('REDIS_AWS_REGION', 'us-west-2')
 
 # modules > stt > streaming_whisper
 whisper_beam_size = int(os.environ.get('BEAM_SIZE', 1))
-whisper_model_name = os.environ.get('WHISPER_MODEL_NAME')
+whisper_model_name = os.environ.get('WHISPER_MODEL_NAME', 'large-v3')
 # https://opennmt.net/CTranslate2/quantization.html
 whisper_compute_type = os.environ.get('WHISPER_COMPUTE_TYPE', 'int8')
 whisper_gpu_indices = os.environ.get('WHISPER_GPU_INDICES')
 whisper_device = os.environ.get('WHISPER_DEVICE', 'auto')
-whisper_model_path = os.environ.get('WHISPER_MODEL_PATH', f'{os.getcwd()}/models/streaming_whisper')
+whisper_model_path = os.environ.get('WHISPER_MODEL_PATH', f'$HOME/models/streaming_whisper')
 whisper_return_transcribed_audio = tobool(os.environ.get('WHISPER_RETURN_TRANSCRIBED_AUDIO'))
 whisper_max_connections = int(os.environ.get('WHISPER_MAX_CONNECTIONS', 10))
 ws_max_size_bytes = int(os.environ.get('WS_MAX_SIZE_BYTES', 1000000))

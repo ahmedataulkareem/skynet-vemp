@@ -61,6 +61,7 @@
     <script>
         let orderedFinals = []
         function setAndPlay(idx) {
+            console.log("kareem test" + " started executing")
             var audio = document.getElementById('aud')
             audio.src = 'data:audio/wav;base64,' + orderedFinals[idx].audio
             audio.play()
@@ -144,7 +145,9 @@
 
             // events
             function setupWsEvents() {
+                console.log("kareem test" + " WsEvents started")
                 ws.onmessage = (e) => {
+                    debugger;
                     let msg = JSON.parse(e.data)
                     if (msg.type === 'interim') {
                         output.innerHTML = '<p>' + msg.text + '</p>'
@@ -157,6 +160,9 @@
 
             function wsConnect() {
                 let wsConnectionString = wsHost.value.trim() + '/' + MEETINGID
+                //wsConnectionString = wsConnectionString.replace('ws','wss')
+                console.log("kareem test" + " connected")
+                debugger
                 if (jwt.value.trim() != '') {
                     wsConnectionString += '?auth_token=' + jwt.value.trim()
                 }
@@ -167,6 +173,7 @@
 
             function wsDisconnect() {
                 if (ws != undefined) {
+                    console.log("kareem test" + " disconnected")
                     ws.close()
                 }
             }
@@ -208,10 +215,20 @@
             });
 
             recorder.port.onmessage = (e) => {
+                debugger;
                 if (ws != undefined && isSpeaking) {
                     const audio = convertFloat32To16BitPCM(e.data)
                     const payload = preparePayload(audio)
-                    ws.send(payload)
+                    debugger;
+                    ws.addEventListener("open", () => {
+                        // Check if readyState is 'OPEN' (value 1)
+                        if (ws.readyState === WebSocket.OPEN) {
+                            ws.send(payload)
+                        } else {
+                            console.warn("WebSocket not ready to send data yet.");
+                        }
+                    });   
+                    ws.send(payload);
                 }
             }
         }

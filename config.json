@@ -1,0 +1,2 @@
+{ "source": "ws://localhost:8000/streaming-whisper/ws", 
+"destination": "ws://lite-http-tunnel-vx5y.onrender:8000" }

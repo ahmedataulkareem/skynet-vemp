@@ -22,6 +22,7 @@ log.info(f'Enabled modules: {modules}')
 
 if device == 'cuda' or is_mac:
     log.info('Using GPU')
+    log.info("kareem test loading streaming_whisper")
 else:
     log.info('Using CPU')
 
@@ -34,6 +35,7 @@ async def lifespan(main_app: FastAPI):
         from skynet.modules.stt.streaming_whisper.app import app as streaming_whisper_app
         from skynet.modules.stt.vox.app import app as vox_app
 
+        log.info("kareem test loading streaming_whisper")
         main_app.mount('/streaming-whisper', streaming_whisper_app)
         main_app.mount('/vox', vox_app)
 

@@ -24,5 +24,6 @@ class MeetingConnection:
                 f'The participant {a_chunk.participant_id} is not in the participants list, creating a new state.'
             )
             self.participants[a_chunk.participant_id] = State(a_chunk.participant_id, a_chunk.language)
+            print("kareem test python looking for PCM", a_chunk.participant_id)
         payloads = await self.participants[a_chunk.participant_id].process(a_chunk)
         return payloads

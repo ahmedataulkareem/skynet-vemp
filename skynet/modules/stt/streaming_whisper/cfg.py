@@ -27,6 +27,7 @@ if whisper_gpu_indices is not None:
     num_workers = len(gpu_indices)
 
 path_or_model_name = whisper_model_name if whisper_model_name is not None else whisper_model_path
+log.info(f'Using {path_or_model_name}')
 
 model = WhisperModel(
     path_or_model_name,
