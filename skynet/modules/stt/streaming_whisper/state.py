@@ -226,6 +226,7 @@ class State:
         log.debug(f'Participant {self.participant_id}: starting transcription of {len(audio)} bytes.')
         try:
             ts_result = await loop.run_in_executor(None, utils.transcribe, [audio], self.lang)
+            #ts_result = await loop.run_in_executor(None, utils.transcribe, [audio], 'hi')
         except RuntimeError as e:
             log.error(f'Participant {self.participant_id}: failed to transcribe {e}')
             return None

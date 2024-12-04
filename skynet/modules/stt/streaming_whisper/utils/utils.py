@@ -261,17 +261,25 @@ def now() -> int:
     return int(datetime.now(timezone.utc).timestamp() * 1000)
 
 
-def transcribe(buffer_list: List[bytes], lang: str = 'en') -> WhisperResult:
+#def transcribe(buffer_list: List[bytes], lang: str = 'en') -> WhisperResult:
+def transcribe(buffer_list: List[bytes], lang: str) -> WhisperResult:
     audio_bytes = b''.join(buffer_list)
     audio = load_audio(audio_bytes)
     iterator, _ = cfg.model.transcribe(
         audio,
         language=lang,
+        best_of = 3,
         task='transcribe',
         word_timestamps=True,
         beam_size=whisper_beam_size,
-        condition_on_previous_text=False,
+        initial_prompt = "transcribe without translating given audio",
+        condition_on_previous_text=True,
+        temperature= [0.0, 0.2, 0.4],
+        chunk_length= 20,
+        hallucination_silence_threshold = 3.0,
+        prompt_reset_on_temperature=0.2
     )
+    # Change self.input_stride of 4 in transcribe.py
     res = list(iterator)
     ts_obj = WhisperResult(res)
     log.debug(f'Transcription results:\n{ts_obj}\n{res}')
@@ -286,6 +294,7 @@ def get_lang(lang: str, short=True) -> str:
     if not short and '-' in lang:
         split_key = lang.split('-')[0]
         return LANGUAGES.get(split_key, 'english').lower().strip()
+        #return LANGUAGES.get(split_key, 'hindi').lower().strip()
     return lang.lower().strip()
 
 

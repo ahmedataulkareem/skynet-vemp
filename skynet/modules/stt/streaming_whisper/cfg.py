@@ -28,6 +28,7 @@ if whisper_gpu_indices is not None:
 
 path_or_model_name = whisper_model_name if whisper_model_name is not None else whisper_model_path
 log.info(f'Using {path_or_model_name}')
+log.info(f'KBC GPU_indices {gpu_indices}')
 
 model = WhisperModel(
     path_or_model_name,

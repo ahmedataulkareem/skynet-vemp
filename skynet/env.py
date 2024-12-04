@@ -77,7 +77,7 @@ redis_aws_region = os.environ.get('REDIS_AWS_REGION', 'us-west-2')
 whisper_beam_size = int(os.environ.get('BEAM_SIZE', 1))
 whisper_model_name = os.environ.get('WHISPER_MODEL_NAME', 'large-v3')
 # https://opennmt.net/CTranslate2/quantization.html
-whisper_compute_type = os.environ.get('WHISPER_COMPUTE_TYPE', 'int8')
+whisper_compute_type = os.environ.get('WHISPER_COMPUTE_TYPE', 'float16')
 whisper_gpu_indices = os.environ.get('WHISPER_GPU_INDICES')
 whisper_device = os.environ.get('WHISPER_DEVICE', 'auto')
 whisper_model_path = os.environ.get('WHISPER_MODEL_PATH', f'$HOME/models/streaming_whisper')

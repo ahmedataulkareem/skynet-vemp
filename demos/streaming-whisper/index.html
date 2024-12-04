@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Skynet - Streaming Whisper Demo</title>
+    <title>MeetHour's transcriber</title>
     <link rel="stylesheet" href="bulma.min.css">
 </head>
 
 <body>
   <section class="section">
     <div class="container is-max-desktop has-text-centered">
-        <h1 class="title">Streaming Whisper Demo</h1>
+        <h1 class="title">MeetHour's transcriber using Whisper</h1>
     </div>
   </section>
   <section class="section is-small">
@@ -26,6 +26,11 @@
                           <div class="select is-disabled">
                               <select id="langselector" name="langselector">
                                 <option value="en" selected="selected">English</option>
+                                <option value="hi" selected="selected">Hindi</option>
+                                <option value="ur" selected="selected">Urdu</option>
+                                <option value="fr" selected="selected">French</option>
+                                <option value="es" selected="selected">Spanish</option>
+                                <option value="te" selected="selected">Telugu</option>
                               </select>
                           </div>
                           <div class="button" id="mutebtn">Mute</div>
@@ -147,7 +152,6 @@
             function setupWsEvents() {
                 console.log("kareem test" + " WsEvents started")
                 ws.onmessage = (e) => {
-                    debugger;
                     let msg = JSON.parse(e.data)
                     if (msg.type === 'interim') {
                         output.innerHTML = '<p>' + msg.text + '</p>'
@@ -162,7 +166,6 @@
                 let wsConnectionString = wsHost.value.trim() + '/' + MEETINGID
                 //wsConnectionString = wsConnectionString.replace('ws','wss')
                 console.log("kareem test" + " connected")
-                debugger
                 if (jwt.value.trim() != '') {
                     wsConnectionString += '?auth_token=' + jwt.value.trim()
                 }
@@ -215,11 +218,9 @@
             });
 
             recorder.port.onmessage = (e) => {
-                debugger;
                 if (ws != undefined && isSpeaking) {
                     const audio = convertFloat32To16BitPCM(e.data)
                     const payload = preparePayload(audio)
-                    debugger;
                     ws.addEventListener("open", () => {
                         // Check if readyState is 'OPEN' (value 1)
                         if (ws.readyState === WebSocket.OPEN) {

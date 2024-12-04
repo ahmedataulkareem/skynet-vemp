@@ -1,5 +1,6 @@
 import asyncio
 from asyncio import Task
+import debugpy
 
 from fastapi import WebSocket, WebSocketDisconnect
 
@@ -14,6 +15,8 @@ log = get_logger(__name__)
 
 FLUSH_AFTER_MS = 2000
 
+debugpy.listen(('0.0.0.0', 5678)) 
+print("Debugger is listening on port 5678")
 
 class ConnectionManager:
     connections: dict[str, MeetingConnection]
